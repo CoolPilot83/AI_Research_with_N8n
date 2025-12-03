@@ -1,0 +1,2007 @@
+{
+  "name": "Final Project - Website Inquiry to Post/FAQ",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "foldersToInclude": [
+            "AAMkADA0NjU1ZTg1LWNiZWItNDU2OS1iMmJkLTczMWQwNDUxM2I5NAAuAAAAAAC_CiAQr9UITrfcJ-zhbsy9AQCBqzJBNlu8TacLIucs4usWAAHpib6MAAA="
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlookTrigger",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        -144
+      ],
+      "id": "a1eadc6a-db39-4db9-8bef-28c4ae2bf463",
+      "name": "Microsoft Outlook Trigger",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "maxTries": 5,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hello,\nI need your help to determine if this message is one of these categories: Review/Complaint, Quote Request, Assistance, FAQ Question, or SPAM. Here is the message:\n{{ $json.output.Message }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant, keep it concise and only with the given categories."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -320
+      ],
+      "id": "261daa57-b450-46ac-bab4-559d1855418b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f631044d-90fb-4145-b6d8-b79bcd5bf964",
+              "leftValue": "={{ $json.from }}",
+              "rightValue": "email@morenoflightaerials.com",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -464,
+        176
+      ],
+      "id": "72832d47-8455-49a8-935d-79e794517e3a",
+      "name": "If",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.bodyPreview }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "Message",
+              "description": "Extract the message contents",
+              "required": true
+            },
+            {
+              "name": "Name",
+              "description": "Extract the name of the user",
+              "required": true
+            },
+            {
+              "name": "Email",
+              "description": "Extract the email of the user",
+              "required": true
+            },
+            {
+              "name": "Phone",
+              "description": "Extract the number of the user",
+              "required": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        -384
+      ],
+      "id": "838cdb78-17ae-4314-ad96-2ae1fcb15d03",
+      "name": "Information Extractor",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "Review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "91da09fe-5096-4a7e-8337-c24846be7c6e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5f61dd1f-3f59-4ee5-8fe7-fa591ead5bd1",
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "Assistance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5fecea4c-0969-4e29-92aa-77ed21fb52a9",
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "Quote",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "285d58ef-1428-4a0f-95ca-2462b5a54243",
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "FAQ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6c7a690e-3203-4629-a5e0-eec1254d38b2",
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": false
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        912,
+        -192
+      ],
+      "id": "922f6c26-8e8e-4392-b8bd-035bcd5c1a9b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        3776,
+        752
+      ],
+      "id": "226e718b-54ca-4f43-9a37-a7a6f59dcca8",
+      "name": "Create a Webpage Update for FAQ",
+      "credentials": {
+        "wordpressApi": {
+          "id": "ScyTwH8iOadHuyNM",
+          "name": "Wordpress account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        480
+      ],
+      "id": "b5781b44-f616-4dba-a502-9fad75975bda",
+      "name": "Create a folder",
+      "webhookId": "ee6edaf4-97aa-4f11-9cdf-2a0f39170ca4",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "create",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2512,
+        480
+      ],
+      "id": "f58b9406-68a4-4b3d-9b35-27c05772aab5",
+      "name": "Create a contact",
+      "webhookId": "d57f0ec1-49d3-4c21-99c5-8a0433be2222",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "mistral:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        4112,
+        -48
+      ],
+      "id": "fabff3e1-b3b4-4371-a72c-63c15146acb6",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "rqe7CnzjkU5ZcsKM",
+          "name": "Ollama account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "value": "19:0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f@unq.gbl.spaces",
+          "mode": "list",
+          "cachedResultName": "Support, Michael Moreno (oneOnOne)",
+          "cachedResultUrl": "https://teams.microsoft.com/l/chat/19%3A0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f%40unq.gbl.spaces/0?tenantId=4f23a61c-f990-4dad-95d5-691a75191863"
+        },
+        "message": "=Do you approve or deny this Review from a Customer?\n{{ $('Information Extractor').item.json.output.Name }}\n{{ $('Information Extractor').item.json.output.Message }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        -1008
+      ],
+      "id": "3fcc079f-bc22-41c8-8a11-eaf08f6a2e4b",
+      "name": "Approve/Deny Review",
+      "webhookId": "1a0dad69-c0fc-4bf9-bf95-69029ede7ae6",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ec766aa8-2775-4a7b-a2c6-4cd53e7466b9",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1776,
+        -1008
+      ],
+      "id": "11424460-dcb7-4e08-82fb-2b8c25ee1341",
+      "name": "If Approved, Else Append"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/imagen-4.0-generate-001",
+          "mode": "list",
+          "cachedResultName": "models/imagen-4.0-generate-001"
+        },
+        "prompt": "=I need to generate am image based on my websites products, morenoflightaerials.com.  I have a client here that stated the below message. I need an image that portrays my website and the honest tone and review or complaint this user is feeling: {{ $('Information Extractor').item.json.output.Message }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        2304,
+        -1856
+      ],
+      "id": "0ff72a53-5b74-4382-9d33-c9a87c81533e",
+      "name": "Generate an image for additional content for review",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xInizQULo5s6L8nC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "value": "19:0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f@unq.gbl.spaces",
+          "mode": "list",
+          "cachedResultName": "Support, Michael Moreno (oneOnOne)",
+          "cachedResultUrl": "https://teams.microsoft.com/l/chat/19%3A0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f%40unq.gbl.spaces/0?tenantId=4f23a61c-f990-4dad-95d5-691a75191863"
+        },
+        "message": "=Do you approve of the following Post to Google Bus and the Website?\n\nTitle: {{ $json['Content-Title'] }}\n\\n\nDate: {{ $json.Month }},{{ $json.Year }}\n\\n\nPost: {{ $json['Content-Post'] }}\n\n",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        4448,
+        -1504
+      ],
+      "id": "7e0597be-a897-45ab-8b95-33283ea44734",
+      "name": "Wait for Approval of AI Generated Text, Image and Post",
+      "webhookId": "51109021-b706-417a-b7c9-49f701ebb037",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "={{ $('Edit Fields').item.json['Content-Title'] }}",
+        "additionalFields": {
+          "content": "={{ $('Edit Fields').item.json['Content-Post'] }}",
+          "status": "draft",
+          "commentStatus": "closed",
+          "format": "standard"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        5136,
+        -1600
+      ],
+      "id": "3aebbb14-bc30-4144-89ef-78a65d8881de",
+      "name": "Post Review to Website",
+      "credentials": {
+        "wordpressApi": {
+          "id": "ScyTwH8iOadHuyNM",
+          "name": "Wordpress account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "19:0d728ab4-a452-45de-87c6-5846ba7781ba_e99f515c-f458-49bd-ab19-d6b6db5e1861@unq.gbl.spaces"
+        },
+        "message": "Hello, This is a test message from N8N, You have received an email that is not part of the n8n Workflow statement! Go read it!",
+        "options": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        192
+      ],
+      "id": "b7a8ebad-57ff-4966-a336-2d334a10663a",
+      "name": "Testing Purposes Only. Chat Message that Email Recieved, Disregarded",
+      "webhookId": "c6d79f2c-e7e6-4ef1-9a04-0c921c338819",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "table",
+        "workbook": {
+          "__rl": true,
+          "value": "016CSV3H65R6CFTLC3JVBIMPK2I4MFUSXQ",
+          "mode": "list",
+          "cachedResultName": "Company Improvents to Make - FinalAIClass",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1"
+        },
+        "worksheet": {
+          "__rl": true,
+          "value": "{262B0DA3-DD71-41AB-B241-49DF7F6CFF03}",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&activeCell=Sheet1!A1"
+        },
+        "table": {
+          "__rl": true,
+          "value": "{E6837704-8B36-4281-A42D-A3EBF189DCC4}",
+          "mode": "list",
+          "cachedResultName": "Table1",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&activeCell=Sheet1!A1:P925"
+        },
+        "fieldsUi": {
+          "values": [
+            {
+              "column": "Column1",
+              "fieldValue": "={{ $json.output.Message }}"
+            },
+            {
+              "column": "Column2",
+              "fieldValue": "={{ $json.output.Name }}"
+            },
+            {
+              "column": "Column3",
+              "fieldValue": "={{ $json.output.Email }}"
+            },
+            {
+              "column": "Column4",
+              "fieldValue": "={{ $json.output.Phone }}"
+            },
+            {
+              "column": "Column5",
+              "fieldValue": "={{ $('If Approved, Else Append').item.json.data.approved }}"
+            },
+            {
+              "column": "Column6",
+              "fieldValue": "={{ $('AI Agent').item.json.output }}"
+            },
+            {
+              "column": "Column7",
+              "fieldValue": "={{ $('Ticket Generator').item.json.ticketNumber }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftExcel",
+      "typeVersion": 2.2,
+      "position": [
+        2368,
+        -880
+      ],
+      "id": "e19a1aef-a4c8-4ca9-bcf5-942c56ffa989",
+      "name": "Append to Company Improvemt/Month",
+      "credentials": {
+        "microsoftExcelOAuth2Api": {
+          "id": "RZkt1fQnYUBzazXg",
+          "name": "Microsoft Excel account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Assistance from Moreno Flight Aerials Team {{ $json.ticketId }}",
+        "bodyContent": "=Hello  {{ $('Information Extractor').item.json.output.Name }},\n\nThank you for reaching out!  We understand you are having an issue, where we will begin reviewing for the best possible solution.\n\nIf you may, could you please tell us more what is occuring?\n\n\n\nTicket information: \nTicket number: \n{{ $json.ticketId }}\n{{ $now }}\n{{ $json.output }}\n{{ $('Information Extractor').item.json.output.Name }}\n{{ $('Information Extractor').item.json.output.Email }}\n{{ $('Information Extractor').item.json.output.Phone }}\n{{ $('Information Extractor').item.json.output.Message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3728,
+        -256
+      ],
+      "id": "1253ba7a-7c63-44c1-8f9d-237d6de3599a",
+      "name": "Create a draft for Assistance",
+      "webhookId": "85d19329-fa03-4730-834b-059aa15476c5",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "get",
+        "draftId": {
+          "__rl": true,
+          "value": "={{ $json.subject }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3888,
+        -224
+      ],
+      "id": "7732e06c-52ec-4179-b251-32610c4ccf24",
+      "name": "Send assistance draft",
+      "webhookId": "37ae6db7-2b6d-48a4-a4ef-ba4f9a63d2bf",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        4112,
+        -256
+      ],
+      "id": "5f90d7ae-521c-4419-be06-a4223566bb86",
+      "name": "AI Chat via email with Customer",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4dfecf3f-2c6e-4eba-b9e9-28ab706623fb",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4432,
+        -272
+      ],
+      "id": "68b437fa-c993-471e-87df-802ada611d18",
+      "name": "If resolved leave be, if not continue help",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4832,
+        -384
+      ],
+      "id": "eb6f8b0b-b851-4b10-83fa-a2d65956bf7e",
+      "name": "Wait 1 day, verify action taken",
+      "webhookId": "e9c0c6fb-595e-46bb-8e45-6acc71ccf0da",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        4672,
+        -272
+      ],
+      "id": "9dd29e55-a43c-4bb5-9143-15ef7723c4f2",
+      "name": "Send message for Action",
+      "webhookId": "753b3982-97c2-4f8b-8cfd-64da52231776",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fed290d6-aaa5-4ea3-97c0-fef39e897f98",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5040,
+        -400
+      ],
+      "id": "ec920aee-72f6-457f-beb9-c46ce4cc2359",
+      "name": "If action taken, with yes in last teams chat. Ignore, if not continue to bug",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "operation": "create",
+        "calendarId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        5296,
+        -400
+      ],
+      "id": "4c5e7293-a080-4c44-b660-f58ccc70fc63",
+      "name": "Create Event task to review issue",
+      "webhookId": "074b2cdd-8472-4859-9163-9d087c92b1b9",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        480
+      ],
+      "id": "93041ed4-f6a6-4177-aeb8-ae23ea2769f2",
+      "name": "Create a draft for a Quote",
+      "webhookId": "3e3d22d5-2f96-4d5f-a971-4de546fc99d5",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -208
+      ],
+      "id": "2389225d-7b3d-4b3c-854d-14d5de753690",
+      "name": "Ollama llama3.1 4.9Gb",
+      "credentials": {
+        "ollamaApi": {
+          "id": "rqe7CnzjkU5ZcsKM",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        752
+      ],
+      "id": "2c9f0dd7-6675-4d77-81ec-556153adfb95",
+      "name": "Send Message on FAQ Questions",
+      "webhookId": "5ab6a8e6-7d08-4cfc-81dc-5c027eda3991",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "ticketFormat": "YYMM-XXX",
+        "counterPadding": 4
+      },
+      "type": "CUSTOM.ticketGenerator",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -256
+      ],
+      "id": "5360c347-92bf-41a7-9fae-1894f1ab6bcf",
+      "name": "Ticket Generator"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "numberInputs": 4,
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1984,
+        -896
+      ],
+      "id": "01944777-a638-4c86-81e1-1c15e026b617",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "value": "19:0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f@unq.gbl.spaces",
+          "mode": "list",
+          "cachedResultName": "Support, Michael Moreno (oneOnOne)",
+          "cachedResultUrl": "https://teams.microsoft.com/l/chat/19%3A0d728ab4-a452-45de-87c6-5846ba7781ba_6fe1e60d-a2fe-49ea-bd55-456a5e09219f%40unq.gbl.spaces/0?tenantId=4f23a61c-f990-4dad-95d5-691a75191863"
+        },
+        "message": "What did this user request, or how did the job go? Do you want to respond to the clients remarks?",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Answer Below"
+            }
+          ]
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 0.5,
+              "resumeUnit": "minutes"
+            }
+          },
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        -1552
+      ],
+      "id": "e8d3aee5-6fda-419c-bd2a-7af41bc0b1c2",
+      "name": "Job Number",
+      "webhookId": "1a0dad69-c0fc-4bf9-bf95-69029ede7ae6",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "NHFsOi6htjJWZ83h",
+          "name": "Microsoft Teams account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "messageAttachment",
+        "messageId": {
+          "__rl": true,
+          "value": "AAMkADA0NjU1ZTg1LWNiZWItNDU2OS1iMmJkLTczMWQwNDUxM2I5NABGAAAAAAC_CiAQr9UITrfcJ-zhbsy9BwCBqzJBNlu8TacLIucs4usWAAAAAAEMAACBqzJBNlu8TacLIucs4usWAAO3571vAAA=",
+          "mode": "list",
+          "cachedResultName": "AI WorkFlow Attachments Here",
+          "cachedResultUrl": "https://outlook.office365.com/owa/?ItemID=AAMkADA0NjU1ZTg1LWNiZWItNDU2OS1iMmJkLTczMWQwNDUxM2I5NABGAAAAAAC%2BCiAQr9UITrfcJ%2Fzhbsy9BwCBqzJBNlu8TacLIucs4usWAAAAAAEMAACBqzJBNlu8TacLIucs4usWAAO3571vAAA%3D&exvsurl=1&viewmodel=ReadMessageItem"
+        },
+        "options": {
+          "fileName": "={{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        -1712
+      ],
+      "id": "b6e0accd-1036-4444-95d5-f3ab819a4996",
+      "name": "Add an attachment",
+      "webhookId": "6ca98d2e-a26f-4ec1-a6f1-8bb4176f243f",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "M9Yz5cj0Fyx2voYv",
+          "name": "Microsoft Outlook account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "operation": "create",
+        "calendarId": {
+          "__rl": true,
+          "value": "AQMkADA0NjU1AGU4NS1jYmViLTQ1NjktYjJiZC03MzFkMDQ1MTNiOTQARgAAA74KIBCv1QhOt9wn-OFuzL0HAIGrMkE2W7xNpwsi5yzi6xYAAAIBBgAAAIGrMkE2W7xNpwsi5yzi6xYAAAKd8gAAAA==",
+          "mode": "list",
+          "cachedResultName": "Calendar"
+        },
+        "subject": "=Followup on Ticket  {{ $('Ticket Generator').item.json.ticketNumber }} about Review ",
+        "startDateTime": "={{ $today }}",
+        "endDateTime": "={{ $now}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        -1504
+      ],
+      "id": "8b0f5729-e64b-41b3-8f1b-9a2fb1169084",
+      "name": "Create an event",
+      "webhookId": "07a3eb5c-9eef-4b11-8aa1-bb37cd3565c8",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "M9Yz5cj0Fyx2voYv",
+          "name": "Microsoft Outlook account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "account": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "location": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleBusinessProfile",
+      "typeVersion": 1,
+      "position": [
+        5136,
+        -1840
+      ],
+      "id": "25140945-6e53-4f21-abd1-ca7680570be6",
+      "name": "Write the Post on GoogleBus Profile",
+      "credentials": {
+        "googleBusinessProfileOAuth2Api": {
+          "id": "3VLfLdkm8zIXWl9a",
+          "name": "Googlen8nFinal"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "toRecipients": "={{ $('Information Extractor').item.json.output.Email }}",
+        "subject": "=Review/Complaint {{ $('Ticket Generator').item.json.ticketNumber }}",
+        "message": "Hello, We have received your review.  Would you like to add any other details to this review, explaining the job, work performed, quality of the work?   The more details the better!",
+        "responseType": "freeText",
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 0.25,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        -1504
+      ],
+      "id": "0a7cc9d1-3a66-4ec3-9f4c-29ad82214245",
+      "name": "Send message and wait for response",
+      "webhookId": "bdcbb151-3099-4b40-81ce-081756b94380",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "operation": "delete",
+        "calendarId": {
+          "__rl": true,
+          "value": "AQMkADA0NjU1AGU4NS1jYmViLTQ1NjktYjJiZC03MzFkMDQ1MTNiOTQARgAAA74KIBCv1QhOt9wn-OFuzL0HAIGrMkE2W7xNpwsi5yzi6xYAAAIBBgAAAIGrMkE2W7xNpwsi5yzi6xYAAAKd8gAAAA==",
+          "mode": "list",
+          "cachedResultName": "Calendar"
+        },
+        "eventId": {
+          "__rl": true,
+          "value": "={{ $json.subject }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        -1696
+      ],
+      "id": "7fb36899-3f04-4a2a-a7be-0cdb5f484b7f",
+      "name": "Delete an event",
+      "webhookId": "64edd011-1621-498d-8758-41f8cca2be46",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "NDIfuQLuTqdJJ7vR",
+          "name": "Microsoft Outlook account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hello, I need to generate a post about our company efforts in helping a user named,  {{ $('Information Extractor').item.json.output.Name }}, who wrote this review \"{{ $('Information Extractor').item.json.output.Message }}.\"  He did add the following information, this can be blank, where if it is please disregard, \"{{ $json.bodyPreview }}\"  I want you to create a response without Fluff, do not tell me its an SEO optimized post or respond to it, just create the post ready to copy into Google business Post and WordPress. In this post I want you to reference our company as \"Moreno Flight Aerials\" and quote the user's initial response and details for the public to see. You are creating a post that both shows the posted Review, create the fluff as our company to the world as a response and making it feel like a quality, workmanship driven, enthusiastic company that cares and are assisting our customers in every way we can. ",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are a Marketing Master! You know exactly what to write and what to put in this Post for the best SEO marketing strategy.  You are great with words and create great marketing posts that drive customers back and new ones after reading your posts."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3488,
+        -1504
+      ],
+      "id": "e93a71ce-9a98-4979-b4cc-a571468e96d7",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3280,
+        -1312
+      ],
+      "id": "b59ff80d-52b3-4d02-9d91-d27273d9b048",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "uabcr9YylHkRd4to",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "mistral:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        -1280
+      ],
+      "id": "5b3450bb-960c-4aa0-8cf6-81529dd24868",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "rqe7CnzjkU5ZcsKM",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "mistral:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        -1232
+      ],
+      "id": "074a8e8a-51e1-4382-915f-6daf2d4c3bb4",
+      "name": "Ollama Chat Model2",
+      "credentials": {
+        "ollamaApi": {
+          "id": "rqe7CnzjkU5ZcsKM",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3888,
+        -1216
+      ],
+      "id": "51001893-cb40-415a-975d-00a61122c28f",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "uabcr9YylHkRd4to",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f91fc45e-a842-4598-a59c-b2288f1e88f1",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4688,
+        -1472
+      ],
+      "id": "b9789bfa-d3cb-405c-b9d5-af61c4f2d8a5",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hello, I need to generate a post title from this recently created post. Do not give us explainations, I just want the title ready to copy and paste into the post:\n\"{{ $json.output }}\"",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are a Marketing Master! You know exactly what to write and what to put in this Post for the best SEO marketing strategy.  You are great with words and create great marketing posts that drive customers back and new ones after reading your posts."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3808,
+        -1504
+      ],
+      "id": "e808c896-7c2f-43c7-9268-d87b0335b4ed",
+      "name": "Title AI"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fea3efb0-2d60-4aca-aa4a-bf0e4d75b56d",
+              "name": "Content-Post",
+              "value": "={{ $('AI Agent1').item.json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "4910e23c-f2f5-45a1-81b6-84dfb4ae0f1c",
+              "name": "Content-Title",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "f3a878d2-9950-49d8-b4c1-ddcacaf6d6bc",
+              "name": "Year",
+              "value": "={{ $('Ticket Generator').item.json.year }}",
+              "type": "number"
+            },
+            {
+              "id": "00a2e5a9-8f95-42de-9208-97c8d185dc0d",
+              "name": "Month",
+              "value": "={{ $('Ticket Generator').item.json.month }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4224,
+        -1504
+      ],
+      "id": "8510163a-80d0-474b-a4d5-b03850d31d4e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        2688,
+        480
+      ],
+      "id": "1ad3abf0-71b4-42a9-b170-ec9fb33e401b",
+      "name": "Create chat message",
+      "webhookId": "0b7ba8be-64db-4d9d-9233-c01a92bec9d6",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "c3xWqSCHRXbzVqji",
+          "name": "Microsoft Teams account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        480
+      ],
+      "id": "aed9a031-c85f-4209-8a65-be6bca472176",
+      "name": "Send message and wait for response1",
+      "webhookId": "0234eb95-1ae9-4d13-93c6-40f4136ca8bc",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "c3xWqSCHRXbzVqji",
+          "name": "Microsoft Teams account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "table",
+        "workbook": {
+          "__rl": true,
+          "value": "016CSV3H65R6CFTLC3JVBIMPK2I4MFUSXQ",
+          "mode": "list",
+          "cachedResultName": "Company Improvents to Make - FinalAIClass",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1"
+        },
+        "worksheet": {
+          "__rl": true,
+          "value": "{262B0DA3-DD71-41AB-B241-49DF7F6CFF03}",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&activeCell=Sheet1!A1"
+        },
+        "table": {
+          "__rl": true,
+          "value": "{E6837704-8B36-4281-A42D-A3EBF189DCC4}",
+          "mode": "list",
+          "cachedResultName": "Table1",
+          "cachedResultUrl": "https://stratoco-my.sharepoint.com/personal/michael_moreno_ltd/_layouts/15/Doc.aspx?sourcedoc=%7B59848FDD-5BAC-424D-863D-5A47185A4AF0%7D&file=Company%20Improvents%20to%20Make%20-%20FinalAIClass.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&activeCell=Sheet1!A1:P925"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftExcel",
+      "typeVersion": 2.2,
+      "position": [
+        3344,
+        480
+      ],
+      "id": "fe9a918a-8cec-4d77-b8c5-98c07f5e4a7a",
+      "name": "Append to Company Customer List",
+      "credentials": {
+        "microsoftExcelOAuth2Api": {
+          "id": "RZkt1fQnYUBzazXg",
+          "name": "Microsoft Excel account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "addWorksheet",
+        "workbook": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftExcel",
+      "typeVersion": 2.2,
+      "position": [
+        3088,
+        352
+      ],
+      "id": "df27b465-f746-45f9-a18e-39e14e6699e3",
+      "name": "Add a sheet to a workbook",
+      "credentials": {
+        "microsoftExcelOAuth2Api": {
+          "id": "RZkt1fQnYUBzazXg",
+          "name": "Microsoft Excel account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "576d3e77-e23a-4d1e-9347-cc6b6cc990bf",
+      "name": "Ollama Chat Model3",
+      "credentials": {
+        "ollamaApi": {
+          "id": "rqe7CnzjkU5ZcsKM",
+          "name": "Ollama account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Microsoft Outlook Trigger": [
+      {
+        "json": {
+          "id": "AAMkADA0NjU1ZTg1LWNiZWItNDU2OS1iMmJkLTczMWQwNDUxM2I5NABGAAAAAAC_CiAQr9UITrfcJ-zhbsy9BwCBqzJBNlu8TacLIucs4usWAAHpib6MAACBqzJBNlu8TacLIucs4usWAAK0RFP7AAA=",
+          "conversationId": "AAQkADA0NjU1ZTg1LWNiZWItNDU2OS1iMmJkLTczMWQwNDUxM2I5NAAQAMA4PrEvTHVOs2QWagHmPsc=",
+          "subject": "New message from Moreno Flight Aerials",
+          "bodyPreview": "Name: Michael Test before Class\r\nEmail: test@test.com\r\nPhone: 135325346\r\nMessage: Hello I just want to say what a Great job on the work. I cannot believe it worked out so well in out jobsite\r\n\r\n---\r\n\r\nDate: December 3, 2025\r\nTime: 2:47 am\r\nPage URL: https://morenoflightaerials.com/contact-us/\r\nUser ",
+          "from": "email@morenoflightaerials.com",
+          "to": [
+            "hamzajadun.seo@gmail.com",
+            "michael@moreno.ltd"
+          ],
+          "categories": [],
+          "hasAttachments": false
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Microsoft Outlook Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Ticket Generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Testing Purposes Only. Chat Message that Email Recieved, Disregarded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Approve/Deny Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a draft for Assistance",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a draft for a Quote",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Message on FAQ Questions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Create a folder": {
+      "main": [
+        [
+          {
+            "node": "Create a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Chat via email with Customer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve/Deny Review": {
+      "main": [
+        [
+          {
+            "node": "If Approved, Else Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Approved, Else Append": {
+      "main": [
+        [
+          {
+            "node": "Generate an image for additional content for review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image for additional content for review": {
+      "main": [
+        [
+          {
+            "node": "Add an attachment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Write the Post on GoogleBus Profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Review to Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Approval of AI Generated Text, Image and Post": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Review to Website": {
+      "main": [
+        []
+      ]
+    },
+    "Create a draft for Assistance": {
+      "main": [
+        [
+          {
+            "node": "Send assistance draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send assistance draft": {
+      "main": [
+        [
+          {
+            "node": "AI Chat via email with Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Chat via email with Customer": {
+      "main": [
+        [
+          {
+            "node": "If resolved leave be, if not continue help",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If resolved leave be, if not continue help": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send message for Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message for Action": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 day, verify action taken",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 day, verify action taken": {
+      "main": [
+        [
+          {
+            "node": "If action taken, with yes in last teams chat. Ignore, if not continue to bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If action taken, with yes in last teams chat. Ignore, if not continue to bug": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create Event task to review issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a draft for a Quote": {
+      "main": [
+        [
+          {
+            "node": "Create a folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a contact": {
+      "main": [
+        [
+          {
+            "node": "Create chat message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama llama3.1 4.9Gb": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message on FAQ Questions": {
+      "main": [
+        [
+          {
+            "node": "Create a Webpage Update for FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Generator": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append to Company Improvemt/Month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Number": {
+      "main": [
+        []
+      ]
+    },
+    "Add an attachment": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event": {
+      "main": [
+        []
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Title AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Title AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Title AI",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Create a Webpage Update for FAQ": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Post Review to Website",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Write the Post on GoogleBus Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title AI": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Wait for Approval of AI Generated Text, Image and Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create chat message": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response1": {
+      "main": [
+        [
+          {
+            "node": "Add a sheet to a workbook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add a sheet to a workbook": {
+      "main": [
+        [
+          {
+            "node": "Append to Company Customer List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "de7e4108-7577-4807-8759-c6b078da8c35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f6b930e24fc6185833770f1d359ab49378e7ddd6b9aafea427f499a8ec4fad2f"
+  },
+  "id": "NjXOcK9zkt0Ora47",
+  "tags": []
+}

@@ -1,0 +1,22 @@
+{
+	"node": "n8n-nodes-base.ticketGenerator",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Core Nodes"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.ticketgenerator/"
+			}
+		]
+	},
+	"alias": [
+		"Ticket",
+		"Number",
+		"Generator"
+	],
+	"subcategories": {
+		"Core Nodes": ["Helpers"]
+	}
+}
+

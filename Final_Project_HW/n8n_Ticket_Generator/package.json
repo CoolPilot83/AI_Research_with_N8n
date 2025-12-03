@@ -1,0 +1,52 @@
+{
+  "name": "n8n-nodes-ticket-generator",
+  "version": "1.0.0",
+  "description": "n8n custom node for generating sequential ticket numbers based on year and month",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "ticket",
+    "generator"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "author": {
+    "name": "",
+    "email": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "node node_modules/typescript/bin/tsc && node node_modules/gulp/bin/gulp.js build:icons",
+    "dev": "node node_modules/typescript/bin/tsc --watch",
+    "format": "node node_modules/prettier/bin-prettier.js nodes credentials --write",
+    "lint": "node node_modules/eslint/bin/eslint.js nodes credentials package.json",
+    "lintfix": "node node_modules/eslint/bin/eslint.js nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint -s"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "nodes": [
+      "dist/nodes/TicketGenerator/TicketGenerator.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint-plugin-n8n-nodes-base": "~1.11.0",
+    "gulp": "^4.0.2",
+    "n8n-workflow": "*",
+    "prettier": "^2.7.1",
+    "typescript": "~5.2.0"
+  },
+  "dependencies": {
+    "n8n-workflow": "*"
+  }
+}
+
